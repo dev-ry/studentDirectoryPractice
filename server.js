@@ -3,6 +3,15 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+// connect to Mongo DB
+require('dotenv').config();
+mongoose.connection.openUri(process.env.DB_CONN, function(err, conn){
+  if (err){
+    console.log('Error connecting to Mongo', err)
+  } else {
+    console.log('Mongoose successfully connected to Mongo DB');
+  }
+});
 
 //app set up
 const app = express();
@@ -21,9 +30,17 @@ app.get('/', function(req, res){
   res.send("Heeeyyy")
 });
 
+const studentRoutes = require('./routes/students');
+
+app.get('/students', studentRoutes.getAllStudents);
+app.post('/students', studentRoutes.createStudent);
+app.get('/students/:id', studentRoutes.getOneStudent);
+app.put('/students/:id', studentRoutes.updateStudent);
+app.delete('/students/:id', studentRoutes.deleteStudent);
+
+
 //config apps
 
-const port = process.env.port || 3000;
 
 
 //app start
